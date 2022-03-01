@@ -89,4 +89,32 @@ contract Polymarket {
                         0);
    }
 
+   modifier allowedToSpend(uint256 _value) {
+      require(_value <= ERC20(polyToken).allowance(msg.sender, address(this)), "Not allowed to spend this much");
+      _;
+   }
+
+   function addYesBet(uint256 _marketId, uint256 _value) public payable allowedToSpend(_value) {
+      Markets storage market = markets[_marketId];
+      ERC20(polyToken).transferFrom(msg.sender, address(this), _value);
+
+      AmoundAdded memory amountAdded = AmountAdded(msg.sender, _value, block.timestamp);
+
+      market.totalYesAmount += _ value;
+      market.totalAmount += _ value;
+      market.yesCount.push(amountAdded);
+   }
+
+   function addNoBet(uint256 _marketId, uint256 _value) public payable allowedToSpend(_value) {
+      Markets storage market = markets[_marketId];
+      ERC20(polyToken).transferFrom(msg.sender, address(this), _value);
+
+      AmoundAdded memory amountAdded = AmountAdded(msg.sender, _value, block.timestamp);
+
+      market.totalNoAmount += _ value;
+      market.totalAmount += _ value;
+      market.noCount.push(amountAdded);
+   }
+
+
 }
