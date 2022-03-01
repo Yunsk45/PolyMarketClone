@@ -22,8 +22,8 @@ contract Polymarket {
       uint256 endTimestamp;
       address createdBy;
       string creatorImageHash;
-      AmoundAdded[] yesCount;
-      AmoundAdded[] noCount;
+      AmountAdded[] yesCount;
+      AmountAdded[] noCount;
       uint256 totalAmount;
       uint256 totalYesAmount;
       uint256 totalNoAmount;
@@ -57,7 +57,7 @@ contract Polymarket {
       _;
    }
    
-   f1unction createMarket(string memory _market, 
+   function createMarket(string memory _market, 
                           string memory _creatorImageHash, 
                           string memory _description, 
                           string memory _resolverUrl, 
@@ -98,10 +98,10 @@ contract Polymarket {
       Markets storage market = markets[_marketId];
       ERC20(polyToken).transferFrom(msg.sender, address(this), _value);
 
-      AmoundAdded memory amountAdded = AmountAdded(msg.sender, _value, block.timestamp);
+      AmountAdded memory amountAdded = AmountAdded(msg.sender, _value, block.timestamp);
 
-      market.totalYesAmount += _ value;
-      market.totalAmount += _ value;
+      market.totalYesAmount += _value;
+      market.totalAmount += _value;
       market.yesCount.push(amountAdded);
    }
 
@@ -109,14 +109,14 @@ contract Polymarket {
       Markets storage market = markets[_marketId];
       ERC20(polyToken).transferFrom(msg.sender, address(this), _value);
 
-      AmoundAdded memory amountAdded = AmountAdded(msg.sender, _value, block.timestamp);
+      AmountAdded memory amountAdded = AmountAdded(msg.sender, _value, block.timestamp);
 
-      market.totalNoAmount += _ value;
-      market.totalAmount += _ value;
+      market.totalNoAmount += _value;
+      market.totalAmount += _value;
       market.noCount.push(amountAdded);
    }
 
-   function getGraphData(uint256 _marketId) public view returns(AmoundAdded[] memory, AmountAdded [] memory) {
+   function getGraphData(uint256 _marketId) public view returns(AmountAdded[] memory, AmountAdded [] memory) {
       Markets storage market = markets[_marketId];
       return (market.yesCount, market.noCount);
    }
@@ -132,7 +132,7 @@ contract Polymarket {
 
       } else {
          for (uint256 i = 0; i < market.noCount.length; i++) {
-            uint256 amount = (market.totalYesAmount * market.noCount[i].amount) / market.totalnoAmount;
+            uint256 amount = (market.totalYesAmount * market.noCount[i].amount) / market.totalNoAmount;
             winningAmount[market.noCount[i].user] += (amount + market.noCount[i].amount);
             winningAddresses.push(market.noCount[i].user);
          }
