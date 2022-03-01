@@ -52,6 +52,41 @@ contract Polymarket {
       uint256 totalNoAmount
    );
 
+   modifier onlyOwner() {
+      require(msg.sender == owner, "Only owner can call.");
+      _;
+   }
+   
+   f1unction createMarket(string memory _market, 
+                          string memory _creatorImageHash, 
+                          string memory _description, 
+                          string memory _resolverUrl, 
+                          uint256 _endTimestamp) public onlyOwner {
+  
+      uint256 timestamp = block.timestamp;
 
+     Markets storage market = markets[totalMarkets];
+     market.id = totalMarkets;
+     totalMarkets++;
+     market.market = _market;
+     market.timestamp = timestamp;
+     market.createdBy = msg.sender;
+     market.creatorImageHash = _creatorImageHash;
+     market.totalAmount = 0;
+     market.totalYesAmount = 0;
+     market.totalNoAmount = 0;
+     market.description = _description;
+     market.resolverUrl = _resolverUrl;
+     market.endTimestamp = _endTimestamp;
+
+     emit MarketCreated(totalMarkets,
+                        _market,
+                        timestamp,
+                        msg.sender,
+                        _creatorImageHash,
+                        0,
+                        0,
+                        0);
+   }
 
 }
