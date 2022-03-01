@@ -2,6 +2,7 @@
 
 .env
 .env.*
+*.swp
 
 # dependencies
 /node_modules
