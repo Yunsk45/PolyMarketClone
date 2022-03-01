@@ -9,10 +9,10 @@ module.exports = {
       network_id: "*",
     },
     matic: {
-      provider: () =>
+      provider: () => 
         new HDWalletProvider(
           process.env.PRIVATE_KEY,
-          `https://rpc-mumbai.maticvigil.com/v1/{process.env.API_KEY}`,
+          `https://rpc-mumbai.maticvigil.com/v1/${process.env.API_KEY}`,
         ),
       network_id: 80001,
       confirmations: 2,
