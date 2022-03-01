@@ -116,5 +116,37 @@ contract Polymarket {
       market.noCount.push(amountAdded);
    }
 
+   function getGraphData(uint256 _marketId) public view returns(AmoundAdded[] memory, AmountAdded [] memory) {
+      Markets storage market = markets[_marketId];
+      return (market.yesCount, market.noCount);
+   }
+
+   function distributeWinningAmount(uint256 _marketId, bool eventOutcome) public payable onlyOwner {
+      Markets storage market = markets[_marketId];
+      if(eventOutcome) {
+         for (uint256 i = 0; i < market.yesCount.length; i++) {
+            uint256 amount = (market.totalNoAmount * market.yesCount[i].amount) / market.totalYesAmount;
+            winningAmount[market.yesCount[i].user] += (amount + market.yesCount[i].amount);
+            winningAddresses.push(market.yesCount[i].user);
+         }
+
+      } else {
+         for (uint256 i = 0; i < market.noCount.length; i++) {
+            uint256 amount = (market.totalYesAmount * market.noCount[i].amount) / market.totalnoAmount;
+            winningAmount[market.noCount[i].user] += (amount + market.noCount[i].amount);
+            winningAddresses.push(market.noCount[i].user);
+         }
+
+      }
+
+      for(uint256 i = 0; i < winningAddresses.length; i++) {
+         address payable _address = payable(winningAddresses[i]);
+         ERC20(polyToken).transfer(_address, winningAmount[_address]);
+         delete winningAmount[_address];
+      }
+      delete winningAddresses;
+      market.eventCompleted = true;
+   }
+
 
 }
